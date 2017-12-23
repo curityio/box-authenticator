@@ -16,28 +16,58 @@
 
 package io.curity.identityserver.plugin.box.authentication;
 
+import se.curity.identityserver.sdk.Nullable;
 import se.curity.identityserver.sdk.web.Request;
 
-public class CallbackGetRequestModel {
+import java.util.function.Function;
+
+class CallbackGetRequestModel
+{
+    @Nullable
+    private final String _error;
+
+    @Nullable
+    private final String _errorDescription;
+
     private String _code;
     private String _state;
     private Request _request;
 
-    public CallbackGetRequestModel(Request request) {
-        _code = request.getParameterValueOrError("code");
-        _state = request.getParameterValueOrError("state");
+    CallbackGetRequestModel(Request request)
+    {
+        Function<String, ? extends RuntimeException> invalidParameter = (s) -> new RuntimeException(String.format(
+                "Expected only one query string parameter named %s, but found multiple.", s));
+
+        _code = request.getQueryParameterValueOrError("code", invalidParameter);
+        _state = request.getQueryParameterValueOrError("state", invalidParameter);
+        _error = request.getQueryParameterValueOrError("error", invalidParameter);
+        _errorDescription = request.getQueryParameterValueOrError("error_description", invalidParameter);
+        
         _request = request;
     }
 
-    public String getCode() {
+    public String getCode()
+    {
         return _code;
     }
 
-    public String getState() {
+    public String getState()
+    {
         return _state;
     }
 
-    public Request getRequest() {
+    public Request getRequest()
+    {
         return _request;
+    }
+
+    public String getErrorDescription()
+    {
+        return _errorDescription;
+    }
+
+    public String getError()
+    {
+        return _error;
     }
 }

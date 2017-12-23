@@ -21,6 +21,7 @@ import se.curity.identityserver.sdk.config.annotation.DefaultString;
 import se.curity.identityserver.sdk.config.annotation.DefaultURI;
 import se.curity.identityserver.sdk.config.annotation.Description;
 import se.curity.identityserver.sdk.service.SessionManager;
+import se.curity.identityserver.sdk.service.WebServiceClient;
 
 import java.net.URI;
 
@@ -50,4 +51,5 @@ public interface BoxAuthenticatorPluginConfig extends Configuration {
 
     SessionManager getSessionManager();
 
+    WebServiceClient getWebServiceClient();
 }
