@@ -120,15 +120,14 @@ public class CallbackRequestHandler implements AuthenticatorRequestHandler<Callb
                 .method("POST")
                 .response();
 
-        if (tokenResponse.statusCode() != 200)
+        int statusCode = tokenResponse.statusCode();
+
+        if (statusCode != 200)
         {
             if (_logger.isDebugEnabled())
             {
-                HttpResponse tokenErrorResponse = tokenResponse.request().response();
-
-                _logger.info("Got error response from token endpoint: error = {}, {}",
-                        tokenErrorResponse.statusCode(),
-                        tokenErrorResponse.body(HttpResponse.asString()));
+                _logger.info("Got error response from token endpoint: error = {}, {}", statusCode,
+                        tokenResponse.body(HttpResponse.asString()));
             }
             
             throw _exceptionFactory.internalServerException(ErrorCode.EXTERNAL_SERVICE_ERROR);
@@ -143,6 +142,16 @@ public class CallbackRequestHandler implements AuthenticatorRequestHandler<Callb
                 .header("Authorization", "Bearer " + accessToken)
                 .method("GET")
                 .response();
+        statusCode = userInfoResponse.statusCode();
+
+        if (statusCode != 200)
+        {
+            if (_logger.isWarnEnabled())
+            {
+                _logger.warn("Got an error response from the user info endpoint. Error = {}, {}", statusCode,
+                        userInfoResponse.body(HttpResponse.asString()));
+            }
+        }
 
         Map<String, String> userInfoResponseData = _json.fromJson(userInfoResponse.body(HttpResponse.asString()))
                 .entrySet().stream()
@@ -193,13 +202,12 @@ public class CallbackRequestHandler implements AuthenticatorRequestHandler<Callb
 
     private static Map<String, String> createPostData(String clientId, String clientSecret, String code, String callbackUri)
     {
-        Map<String, String> data = new HashMap<>(6);
+        Map<String, String> data = new HashMap<>(5);
 
         data.put("client_id", clientId);
         data.put("client_secret", clientSecret);
         data.put("code", code);
         data.put("grant_type", "authorization_code");
-        data.put("respones_type", "token");
         data.put("redirect_uri", callbackUri);
 
         return data;
