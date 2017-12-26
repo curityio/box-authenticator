@@ -30,20 +30,11 @@ public interface BoxAuthenticatorPluginConfig extends Configuration {
     @Description("Client id")
     String getClientId();
 
-    @Description("Secret key used for communication with Box")
     String getClientSecret();
 
     @Description("URL to the Box authorization endpoint")
     @DefaultURI("https://account.box.com/api/oauth2/authorize")
     URI getAuthorizationEndpoint();
-
-    @Description("URL to the Box token endpoint")
-    @DefaultURI("https://api.box.com/oauth2/token")
-    URI getTokenEndpoint();
-
-    @Description("URL to Box user info endpoint")
-    @DefaultURI("https://api.box.com/2.0/users/me")
-    URI getUserInfoEndpoint();
 
     @Description("A space-separated list of scopes to request from Box")
     @DefaultString("")
@@ -51,5 +42,7 @@ public interface BoxAuthenticatorPluginConfig extends Configuration {
 
     SessionManager getSessionManager();
 
-    WebServiceClient getWebServiceClient();
+    WebServiceClient getTokenEndpointWebServiceClient();
+
+    WebServiceClient getUserInfoEndpointWebServiceClient();
 }
