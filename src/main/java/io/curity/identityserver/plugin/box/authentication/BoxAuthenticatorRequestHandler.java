@@ -31,8 +31,9 @@ import se.curity.identityserver.sdk.service.authentication.AuthenticatorInformat
 import se.curity.identityserver.sdk.web.Request;
 import se.curity.identityserver.sdk.web.Response;
 
+import java.net.MalformedURLException;
 import java.net.URI;
-import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedHashMap;
@@ -65,15 +66,13 @@ public class BoxAuthenticatorRequestHandler implements AuthenticatorRequestHandl
         _authenticatorInformationProvider.getFullyQualifiedAuthenticationUri();
 
         URI authUri = _authenticatorInformationProvider.getFullyQualifiedAuthenticationUri();
-        URI redirectUri;
+        URL redirectUri;
 
         try
         {
-            redirectUri = new URI(authUri.getScheme(), authUri.getUserInfo(), authUri.getHost(), authUri.getPort(),
-                    authUri.getPath() + "/" + BoxAuthenticatorPluginDescriptor.CALLBACK, authUri.getQuery(),
-                    authUri.getFragment());
+            redirectUri = new URL(authUri.toURL(), authUri.getPath() + "/" + BoxAuthenticatorPluginDescriptor.CALLBACK);
         }
-        catch (URISyntaxException e)
+        catch (MalformedURLException e)
         {
             throw _exceptionFactory.internalServerException(ErrorCode.INVALID_REDIRECT_URI,
                     "Could not create redirect URI");
@@ -82,14 +81,15 @@ public class BoxAuthenticatorRequestHandler implements AuthenticatorRequestHandl
         _logger.debug("Redirecting to {}", redirectUri);
 
         String state = UUID.randomUUID().toString();
-        Map<String, Collection<String>> queryStringArguments = new LinkedHashMap<>(4);
+        Map<String, Collection<String>> queryStringArguments = new LinkedHashMap<>(5);
         @Nullable String scope = _config.getScope();
 
         _config.getSessionManager().put(Attribute.of("state", state));
 
         queryStringArguments.put("client_id", Collections.singleton(_config.getClientId()));
-        queryStringArguments.put("redirect_uri", Collections.singleton(redirectUri.toASCIIString()));
+        queryStringArguments.put("redirect_uri", Collections.singleton(redirectUri.toString()));
         queryStringArguments.put("state", Collections.singleton(state));
+        queryStringArguments.put("response_type", Collections.singleton("code"));
 
         if (scope != null)
         {
