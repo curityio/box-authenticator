@@ -20,7 +20,6 @@ import io.curity.identityserver.plugin.box.config.BoxAuthenticatorPluginConfig;
 import io.curity.identityserver.plugin.box.descriptor.BoxAuthenticatorPluginDescriptor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import se.curity.identityserver.sdk.Nullable;
 import se.curity.identityserver.sdk.attribute.Attribute;
 import se.curity.identityserver.sdk.authentication.AuthenticationResult;
 import se.curity.identityserver.sdk.authentication.AuthenticatorRequestHandler;
@@ -37,8 +36,10 @@ import java.net.URL;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 
 public class BoxAuthenticatorRequestHandler implements AuthenticatorRequestHandler<Request>
@@ -82,7 +83,6 @@ public class BoxAuthenticatorRequestHandler implements AuthenticatorRequestHandl
 
         String state = UUID.randomUUID().toString();
         Map<String, Collection<String>> queryStringArguments = new LinkedHashMap<>(5);
-        @Nullable String scope = _config.getScope();
 
         _config.getSessionManager().put(Attribute.of("state", state));
 
@@ -91,10 +91,49 @@ public class BoxAuthenticatorRequestHandler implements AuthenticatorRequestHandl
         queryStringArguments.put("state", Collections.singleton(state));
         queryStringArguments.put("response_type", Collections.singleton("code"));
 
-        if (scope != null)
+        Set<String> scopes = new LinkedHashSet<>(8);
+
+        if (_config.isReadWriteAllFileAccess())
         {
-            queryStringArguments.put("scope", Collections.singleton(scope));
+            scopes.add("root_readwrite");
         }
+
+        if (_config.isManageEnterprise())
+        {
+            scopes.add("manage_enterprise");
+        }
+
+        if (_config.isManageUsers())
+        {
+            scopes.add("manage_managed_users");
+        }
+
+        if (_config.isManageGroups())
+        {
+            scopes.add("manage_groups");
+        }
+
+        if (_config.isEnterpriseProperties())
+        {
+            scopes.add("manage_enterprise_properties");
+        }
+
+        if (_config.isManageDataRetention())
+        {
+            scopes.add("manage_data_retention");
+        }
+
+        if (_config.isManageUsers())
+        {
+            scopes.add("manage_app_users");
+        }
+
+        if (_config.isManageWebhooks())
+        {
+            scopes.add("manage_webhook");
+        }
+
+        queryStringArguments.put("scope", Collections.singleton(String.join(" ", scopes)));
 
         throw _exceptionFactory.redirectException(_config.getAuthorizationEndpoint(),
                 RedirectStatusCode.MOVED_TEMPORARILY, queryStringArguments, false);

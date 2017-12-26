@@ -17,6 +17,7 @@
 package io.curity.identityserver.plugin.box.config;
 
 import se.curity.identityserver.sdk.config.Configuration;
+import se.curity.identityserver.sdk.config.annotation.DefaultBoolean;
 import se.curity.identityserver.sdk.config.annotation.DefaultString;
 import se.curity.identityserver.sdk.config.annotation.DefaultURI;
 import se.curity.identityserver.sdk.config.annotation.Description;
@@ -24,21 +25,47 @@ import se.curity.identityserver.sdk.service.SessionManager;
 import se.curity.identityserver.sdk.service.WebServiceClient;
 
 import java.net.URI;
+import java.util.Optional;
 
 @SuppressWarnings("InterfaceNeverImplemented")
 public interface BoxAuthenticatorPluginConfig extends Configuration {
-    @Description("Client id")
+    @Description("The client applications identifier")
     String getClientId();
 
+    @Description("The secret of the client application")
     String getClientSecret();
 
     @Description("URL to the Box authorization endpoint")
     @DefaultURI("https://account.box.com/api/oauth2/authorize")
     URI getAuthorizationEndpoint();
 
-    @Description("A space-separated list of scopes to request from Box")
-    @DefaultString("")
-    String getScope();
+    @DefaultBoolean(false)
+    @Description("Request a scope that allows for read and write access to all files and folders")
+    boolean isReadWriteAllFileAccess();
+
+    @DefaultBoolean(false)
+    @Description("Request a scope that allows the entire enterprise to be managed")
+    boolean isManageEnterprise();
+
+    @DefaultBoolean(false)
+    @Description("Request a scope that allows the app to view, create, edit, and delete groups and group memberships")
+    boolean isManageGroups();
+
+    @DefaultBoolean(false)
+    @Description("Request a scope that allows the app to to view and edit enterprise attributes and reports as well as edit and delete device pinners")
+    boolean isEnterpriseProperties();
+
+    @DefaultBoolean(false)
+    @Description("Request a scope that allows the app to view and create content retention policies")
+    boolean isManageDataRetention();
+
+    @DefaultBoolean(false)
+    @Description("Request a scope that allows the app to manage and provision users")
+    boolean isManageUsers();
+
+    @DefaultBoolean(false)
+    @Description("Request a scope that allows the app to programmatically manage web hooks")
+    boolean isManageWebhooks();
 
     SessionManager getSessionManager();
 
