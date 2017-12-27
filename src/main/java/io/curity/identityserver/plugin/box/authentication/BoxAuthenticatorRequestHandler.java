@@ -79,8 +79,6 @@ public class BoxAuthenticatorRequestHandler implements AuthenticatorRequestHandl
                     "Could not create redirect URI");
         }
 
-        _logger.debug("Redirecting to {}", redirectUri);
-
         String state = UUID.randomUUID().toString();
         Map<String, Collection<String>> queryStringArguments = new LinkedHashMap<>(5);
 
@@ -91,16 +89,11 @@ public class BoxAuthenticatorRequestHandler implements AuthenticatorRequestHandl
         queryStringArguments.put("state", Collections.singleton(state));
         queryStringArguments.put("response_type", Collections.singleton("code"));
 
-        Set<String> scopes = new LinkedHashSet<>(8);
+        Set<String> scopes = new LinkedHashSet<>(7);
 
         if (_config.isReadWriteAllFileAccess())
         {
             scopes.add("root_readwrite");
-        }
-
-        if (_config.isManageEnterprise())
-        {
-            scopes.add("manage_enterprise");
         }
 
         if (_config.isManageUsers())
@@ -123,7 +116,7 @@ public class BoxAuthenticatorRequestHandler implements AuthenticatorRequestHandl
             scopes.add("manage_data_retention");
         }
 
-        if (_config.isManageUsers())
+        if (_config.isManageAppUsers())
         {
             scopes.add("manage_app_users");
         }
@@ -134,6 +127,9 @@ public class BoxAuthenticatorRequestHandler implements AuthenticatorRequestHandl
         }
 
         queryStringArguments.put("scope", Collections.singleton(String.join(" ", scopes)));
+
+        _logger.debug("Redirecting to {} with query string arguments {}", _config.getAuthorizationEndpoint(),
+                queryStringArguments);
 
         throw _exceptionFactory.redirectException(_config.getAuthorizationEndpoint(),
                 RedirectStatusCode.MOVED_TEMPORARILY, queryStringArguments, false);

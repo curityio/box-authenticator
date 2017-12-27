@@ -112,11 +112,12 @@ public class CallbackRequestHandler implements AuthenticatorRequestHandler<Callb
 
         validateState(requestModel.getState());
 
-        HttpResponse tokenResponse = _config.getTokenEndpointWebServiceClient()
+        HttpResponse tokenResponse = _config.getWebServiceClient()
+                .withPath(_config.getTokenUri())
                 .request()
                 .accept("application/json")
                 .body(getFormEncodedBodyFrom(createPostData(_config.getClientId(), _config.getClientSecret(),
-                        requestModel.getCode(), requestModel.getRequest().getUrl())))
+                        requestModel.getCode(), requestModel.getUrl())))
                 .method("POST")
                 .response();
 
@@ -136,7 +137,8 @@ public class CallbackRequestHandler implements AuthenticatorRequestHandler<Callb
         Map<String, Object> tokenResponseData = _json.fromJson(tokenResponse.body(HttpResponse.asString()));
 
         String accessToken = Objects.toString(tokenResponseData.get("access_token"));
-        HttpResponse userInfoResponse = _config.getUserInfoEndpointWebServiceClient()
+        HttpResponse userInfoResponse = _config.getWebServiceClient()
+                .withPath(_config.getUserInfoUri())
                 .request()
                 .accept("application/json")
                 .header("Authorization", "Bearer " + accessToken)
