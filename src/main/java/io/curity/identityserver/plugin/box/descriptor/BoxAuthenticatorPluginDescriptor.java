@@ -16,35 +16,42 @@
 
 package io.curity.identityserver.plugin.box.descriptor;
 
-import com.google.common.collect.ImmutableMap;
 import io.curity.identityserver.plugin.box.authentication.CallbackRequestHandler;
 import io.curity.identityserver.plugin.box.authentication.BoxAuthenticatorRequestHandler;
 import io.curity.identityserver.plugin.box.config.BoxAuthenticatorPluginConfig;
 import se.curity.identityserver.sdk.authentication.AuthenticatorRequestHandler;
 import se.curity.identityserver.sdk.plugin.descriptor.AuthenticatorPluginDescriptor;
 
+import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 public final class BoxAuthenticatorPluginDescriptor
-        implements AuthenticatorPluginDescriptor<BoxAuthenticatorPluginConfig> {
-    public final static String INDEX = "index";
+        implements AuthenticatorPluginDescriptor<BoxAuthenticatorPluginConfig>
+{
+    private final static String INDEX = "index";
     public final static String CALLBACK = "callback";
 
     @Override
-    public String getPluginImplementationType() {
+    public String getPluginImplementationType()
+    {
         return "box";
     }
 
     @Override
-    public Class<? extends BoxAuthenticatorPluginConfig> getConfigurationType() {
+    public Class<? extends BoxAuthenticatorPluginConfig> getConfigurationType()
+    {
         return BoxAuthenticatorPluginConfig.class;
     }
 
     @Override
-    public Map<String, Class<? extends AuthenticatorRequestHandler<?>>> getAuthenticationRequestHandlerTypes() {
-        return ImmutableMap.of(
-                INDEX, BoxAuthenticatorRequestHandler.class,
-                CALLBACK, CallbackRequestHandler.class);
-    }
+    public Map<String, Class<? extends AuthenticatorRequestHandler<?>>> getAuthenticationRequestHandlerTypes()
+    {
+        Map<String, Class<? extends AuthenticatorRequestHandler<?>>> handlers = new LinkedHashMap<>(2);
 
+        handlers.put(INDEX, BoxAuthenticatorRequestHandler.class);
+        handlers.put(CALLBACK, CallbackRequestHandler.class);
+
+        return Collections.unmodifiableMap(handlers);
+    }
 }

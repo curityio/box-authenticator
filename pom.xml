@@ -4,25 +4,14 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <repositories>
-        <repository>
-            <id>customer-release-repo</id>
-            <url>https://nexus.curity.se/nexus/content/repositories/customer-release-repo</url>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-        </repository>
-    </repositories>
-
     <groupId>io.curity.identityserver.plugin</groupId>
     <artifactId>identityserver.plugins.authenticators.box</artifactId>
-    <version>1.0.0</version>
-    <packaging>jar</packaging>
+    <version>1.1.0-SNAPSHOT</version>
+    
     <name>Box Authenticator</name>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <libPluginsDir>lib/plugins/authenticator-box</libPluginsDir>
     </properties>
 
     <build>
@@ -36,22 +25,6 @@
                     <target>1.8</target>
                 </configuration>
             </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-jar-plugin</artifactId>
-                <version>3.0.0</version>
-                <configuration>
-                    <outputDirectory>${DIST_DIR}/${libPluginsDir}</outputDirectory>
-                    <archive>
-                        <manifestEntries>
-                            <Implementation-Title>Box-Authenticator-Plugin</Implementation-Title>
-                            <Implementation-Vendor>Curity AB</Implementation-Vendor>
-                            <Plugin-Namespace>https://curity.se/ns/conf/authenticators/box</Plugin-Namespace>
-                            <Plugin-Prefix>box</Plugin-Prefix>
-                        </manifestEntries>
-                    </archive>
-                </configuration>
-            </plugin>
         </plugins>
     </build>
 
@@ -59,24 +32,13 @@
         <dependency>
           <groupId>se.curity.identityserver</groupId>
           <artifactId>identityserver.sdk</artifactId>
-          <version>2.3.0</version>
+          <version>2.3.1</version>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
             <version>1.7.22</version>
         </dependency>
-        <dependency>
-            <groupId>com.google.collections</groupId>
-            <artifactId>google-collections</artifactId>
-            <version>1.0-rc2</version>
-        </dependency>
-        <dependency>
-            <groupId>io.curity.identityserver.plugin</groupId>
-            <artifactId>identityserver.plugins.oauth.authenticators-utility</artifactId>
-            <version>1.0.0</version>
-        </dependency>
-
     </dependencies>
 
     <distributionManagement>
@@ -87,4 +49,13 @@
         </repository>
     </distributionManagement>
 
+    <repositories>
+        <repository>
+            <id>customer-release-repo</id>
+            <url>https://nexus.curity.se/nexus/content/repositories/customer-release-repo</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
 </project>
