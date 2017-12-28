@@ -6,7 +6,7 @@
 
     <groupId>io.curity.identityserver.plugin</groupId>
     <artifactId>identityserver.plugins.authenticators.box</artifactId>
-    <version>1.1.0</version>
+    <version>1.2.0-SNAPSHOT</version>
     
     <name>Box Authenticator</name>
 
@@ -40,14 +40,6 @@
             <version>1.7.22</version>
         </dependency>
     </dependencies>
-
-    <distributionManagement>
-        <repository>
-            <id>curity-release-repo</id>
-            <name>Curity Nexus Release Repository</name>
-            <url>https://nexus.curity.se/nexus/content/repositories/twobo-release-repo/</url>
-        </repository>
-    </distributionManagement>
 
     <repositories>
         <repository>
