@@ -29,7 +29,6 @@ import java.util.Map;
 public final class BoxAuthenticatorPluginDescriptor
         implements AuthenticatorPluginDescriptor<BoxAuthenticatorPluginConfig>
 {
-    private final static String INDEX = "index";
     public final static String CALLBACK = "callback";
 
     @Override
@@ -49,7 +48,7 @@ public final class BoxAuthenticatorPluginDescriptor
     {
         Map<String, Class<? extends AuthenticatorRequestHandler<?>>> handlers = new LinkedHashMap<>(2);
 
-        handlers.put(INDEX, BoxAuthenticatorRequestHandler.class);
+        handlers.put("index", BoxAuthenticatorRequestHandler.class);
         handlers.put(CALLBACK, CallbackRequestHandler.class);
 
         return Collections.unmodifiableMap(handlers);
