@@ -61,7 +61,7 @@ class CallbackGetRequestModel
         return _errorDescription;
     }
 
-    public String getUrl()
+    public String getRequestUrl()
     {
         return _url;
     }
