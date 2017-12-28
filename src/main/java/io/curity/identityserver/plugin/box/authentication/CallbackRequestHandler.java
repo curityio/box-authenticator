@@ -109,7 +109,7 @@ public class CallbackRequestHandler implements AuthenticatorRequestHandler<Callb
         subjectAttributes.add(Attribute.of("phone", PhoneNumber.of(userInfoResponseData.get("phone"), false)));
         subjectAttributes.add(Attribute.of("photo", Photo.of(userInfoResponseData.get("avatar_url"), false)));
         subjectAttributes.add(Attribute.of("box_id", userInfoResponseData.get("id")));
-        subjectAttributes.add(Attribute.of("language", userInfoResponseData.get("language")));
+        subjectAttributes.add(Attribute.of("preferredLanguage", userInfoResponseData.get("language")));
         subjectAttributes.add(Attribute.of("timezone", userInfoResponseData.get("timezone")));
 
         @Nullable String jobTitle = userInfoResponseData.get("job_title");
