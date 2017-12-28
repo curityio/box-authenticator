@@ -34,21 +34,9 @@ public interface BoxAuthenticatorPluginConfig extends Configuration {
     @Description("The secret of the client application")
     String getClientSecret();
 
-    @Description("URL to the Box authorization endpoint")
-    @DefaultURI("https://account.box.com/api/oauth2/authorize")
-    URI getAuthorizationEndpoint();
-
     SessionManager getSessionManager();
     
     WebServiceClient getWebServiceClient();
-
-    @DefaultString("/oauth2/token")
-    @Description("The URI (i.e., path) to Box's token endpoint")
-    String getTokenUri();
-
-    @DefaultString("/2.0/users/me")
-    @Description("The URI (i.e., path) to Box's user info endpoint")
-    String getUserInfoUri();
 
     @DefaultBoolean(false)
     @Description("Request a scope (root_readwrite) that allows for read and write access to all files and folders")

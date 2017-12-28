@@ -144,11 +144,9 @@ The easiest way to configure a new Box authenticator is using the Curity admin U
 9. In the ``Hostname`` textbox, enter ``api.box.com``.
 10. In the ``Port`` textbox, enter ``443``.
 11. In the ``Context`` textfield, leave the default of ``/``.
-12. In the ``Authorization Endpoint`` textfield, leave the default of ``https://account.box.com/api/oauth2/authorize`` unless Box has changed something in their OAuth server. (If they have, feel free to `file an issue <https://github.com/curityio/box-authenticator/issues>`_ or `create a pull request <https://github.com/curityio/box-authenticator/pulls>`_.)
-13. In the ``Client ID`` textfield, enter the client ID from the Box app configuration. This is the auto-generated ID that was shown after picking the app type and authentication method.
-14. Also enter the matching ``Client Secret``.
-15. If you have enabled any scopes or wish to limit the scopes that Curity will request of Box, toggle on the desired scopes (e.g., ``Enterprise Properties`` or ``Manage Groups``).
-16. For the ``Token Uri`` and ``User Info Uri`` textfields, the defaults of ``/oauth2/token`` and ``/2.0/users/me``, respectively, should be sufficient unless Box has updated their OAuth server somehow (in which case issues and pull requests are appreciated).
+12. In the ``Client ID`` textfield, enter the client ID from the Box app configuration. This is the auto-generated ID that was shown after picking the app type and authentication method.
+13. Also enter the matching ``Client Secret``.
+14. If you have enabled any scopes or wish to limit the scopes that Curity will request of Box, toggle on the desired scopes (e.g., ``Enterprise Properties`` or ``Manage Groups``).
 
 Once all of these changes are made, they will be staged, but not committed (i.e., not running). To make them active, click the ``Commit`` menu option in the ``Changes`` menu. Optionally enter a comment in the ``Deploy Changes`` dialogue and click ``OK``.
 
@@ -233,16 +231,6 @@ This plugin and its associated documentation is listed under the `Apache 2 licen
 More Information
 ~~~~~~~~~~~~~~~~
 
-Please visit `curity.io`_ for more information about the Curity Identity Server.
+Please visit `curity.io <https://curity.io/>`_ for more information about the Curity Identity Server.
 
 Copyright (C) 2017 Curity AB.
-
-.. _Box app: https://app.box.com/developers/console/newapp
-.. _curity.io/plugins: https://support.curity.io/docs/latest/developer-guide/plugins/index.html#plugin-installation
-.. _commons-codec-1.9.jar: http://central.maven.org/maven2/commons-codec/commons-codec/1.9/commons-codec-1.9.jar
-.. _commons-logging-1.2.jar: http://central.maven.org/maven2/commons-logging/commons-logging/1.2/commons-logging-1.2.jar
-.. _google-collections-1.0-rc2.jar: http://central.maven.org/maven2/com/google/collections/google-collections/1.0-rc2/google-collections-1.0-rc2.jar
-.. _httpclient-4.5.jar: http://central.maven.org/maven2/org/apache/httpcomponents/httpclient/4.5/httpclient-4.5.jar
-.. _httpcore-4.4.1.jar: http://central.maven.org/maven2/org/apache/httpcomponents/httpcore/4.4.1/httpcore-4.4.1.jar
-.. _identityserver.plugins.oauth.authenticators-utility-1.0.0.jar: https://github.com/curityio/oauth-authenticator-utility-plugin
-.. _curity.io: https://curity.io/

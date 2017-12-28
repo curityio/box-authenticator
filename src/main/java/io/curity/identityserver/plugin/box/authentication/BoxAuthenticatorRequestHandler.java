@@ -42,9 +42,12 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
+import static io.curity.identityserver.plugin.box.descriptor.BoxAuthenticatorPluginDescriptor.*;
+
 public class BoxAuthenticatorRequestHandler implements AuthenticatorRequestHandler<Request>
 {
     private static final Logger _logger = LoggerFactory.getLogger(BoxAuthenticatorRequestHandler.class);
+    private static final String AUTHORIZATION_ENDPOINT = "https://account.box.com/api/oauth2/authorize";
 
     private final BoxAuthenticatorPluginConfig _config;
     private final AuthenticatorInformationProvider _authenticatorInformationProvider;
@@ -64,23 +67,10 @@ public class BoxAuthenticatorRequestHandler implements AuthenticatorRequestHandl
     {
         _logger.debug("GET request received for authentication authentication");
 
-        _authenticatorInformationProvider.getFullyQualifiedAuthenticationUri();
-
-        URI authUri = _authenticatorInformationProvider.getFullyQualifiedAuthenticationUri();
-        URL redirectUri;
-
-        try
-        {
-            redirectUri = new URL(authUri.toURL(), authUri.getPath() + "/" + BoxAuthenticatorPluginDescriptor.CALLBACK);
-        }
-        catch (MalformedURLException e)
-        {
-            throw _exceptionFactory.internalServerException(ErrorCode.INVALID_REDIRECT_URI,
-                    "Could not create redirect URI");
-        }
-
+        URL redirectUri = createRedirectUri();
         String state = UUID.randomUUID().toString();
         Map<String, Collection<String>> queryStringArguments = new LinkedHashMap<>(5);
+        Set<String> scopes = new LinkedHashSet<>(7);
 
         _config.getSessionManager().put(Attribute.of("state", state));
 
@@ -88,8 +78,6 @@ public class BoxAuthenticatorRequestHandler implements AuthenticatorRequestHandl
         queryStringArguments.put("redirect_uri", Collections.singleton(redirectUri.toString()));
         queryStringArguments.put("state", Collections.singleton(state));
         queryStringArguments.put("response_type", Collections.singleton("code"));
-
-        Set<String> scopes = new LinkedHashSet<>(7);
 
         if (_config.isReadWriteAllFileAccess())
         {
@@ -128,11 +116,26 @@ public class BoxAuthenticatorRequestHandler implements AuthenticatorRequestHandl
 
         queryStringArguments.put("scope", Collections.singleton(String.join(" ", scopes)));
 
-        _logger.debug("Redirecting to {} with query string arguments {}", _config.getAuthorizationEndpoint(),
+        _logger.debug("Redirecting to {} with query string arguments {}", AUTHORIZATION_ENDPOINT,
                 queryStringArguments);
 
-        throw _exceptionFactory.redirectException(_config.getAuthorizationEndpoint(),
+        throw _exceptionFactory.redirectException(AUTHORIZATION_ENDPOINT,
                 RedirectStatusCode.MOVED_TEMPORARILY, queryStringArguments, false);
+    }
+
+    private URL createRedirectUri()
+    {
+        try
+        {
+            URI authUri = _authenticatorInformationProvider.getFullyQualifiedAuthenticationUri();
+
+            return new URL(authUri.toURL(), authUri.getPath() + "/" + CALLBACK);
+        }
+        catch (MalformedURLException e)
+        {
+            throw _exceptionFactory.internalServerException(ErrorCode.INVALID_REDIRECT_URI,
+                    "Could not create redirect URI");
+        }
     }
 
     @Override

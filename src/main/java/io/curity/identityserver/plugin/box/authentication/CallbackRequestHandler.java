@@ -94,72 +94,12 @@ public class CallbackRequestHandler implements AuthenticatorRequestHandler<Callb
     @Override
     public Optional<AuthenticationResult> get(CallbackGetRequestModel requestModel, Response response)
     {
-        if (!Objects.isNull(requestModel.getError()))
-        {
-
-            if ("access_denied".equals(requestModel.getError()))
-            {
-                _logger.debug("Got an error from Box: {} - {}", requestModel.getError(), requestModel.getErrorDescription());
-
-                throw _exceptionFactory.redirectException(
-                        _authenticatorInformationProvider.getAuthenticationBaseUri().toASCIIString());
-            }
-
-            _logger.warn("Got an error from Box: {} - {}", requestModel.getError(), requestModel.getErrorDescription());
-
-            throw _exceptionFactory.externalServiceException("Login with Box failed");
-        }
-
         validateState(requestModel.getState());
+        handleError(requestModel);
 
-        HttpResponse tokenResponse = _config.getWebServiceClient()
-                .withPath(_config.getTokenUri())
-                .request()
-                .accept("application/json")
-                .body(getFormEncodedBodyFrom(createPostData(_config.getClientId(), _config.getClientSecret(),
-                        requestModel.getCode(), requestModel.getUrl())))
-                .method("POST")
-                .response();
-
-        int statusCode = tokenResponse.statusCode();
-
-        if (statusCode != 200)
-        {
-            if (_logger.isDebugEnabled())
-            {
-                _logger.info("Got error response from token endpoint: error = {}, {}", statusCode,
-                        tokenResponse.body(HttpResponse.asString()));
-            }
-            
-            throw _exceptionFactory.internalServerException(ErrorCode.EXTERNAL_SERVICE_ERROR);
-        }
-
-        Map<String, Object> tokenResponseData = _json.fromJson(tokenResponse.body(HttpResponse.asString()));
-
-        String accessToken = Objects.toString(tokenResponseData.get("access_token"));
-        HttpResponse userInfoResponse = _config.getWebServiceClient()
-                .withPath(_config.getUserInfoUri())
-                .request()
-                .accept("application/json")
-                .header("Authorization", "Bearer " + accessToken)
-                .method("GET")
-                .response();
-        statusCode = userInfoResponse.statusCode();
-
-        if (statusCode != 200)
-        {
-            if (_logger.isWarnEnabled())
-            {
-                _logger.warn("Got an error response from the user info endpoint. Error = {}, {}", statusCode,
-                        userInfoResponse.body(HttpResponse.asString()));
-            }
-        }
-
-        Map<String, String> userInfoResponseData = _json.fromJson(userInfoResponse.body(HttpResponse.asString()))
-                .entrySet().stream()
-                .filter(e -> e.getValue() instanceof String)
-                .collect(Collectors.toMap(Map.Entry::getKey, e -> (String)e.getValue()));
-
+        Map<String, Object> tokenResponseData = redeemCodeForTokens(requestModel);
+        @Nullable Object accessToken = tokenResponseData.get("access_token");
+        Map<String, String> userInfoResponseData = getUserInfo(accessToken);
         List<Attribute> subjectAttributes = new LinkedList<>(), contextAttributes = new LinkedList<>();
         String login = userInfoResponseData.get("login");
 
@@ -192,7 +132,7 @@ public class CallbackRequestHandler implements AuthenticatorRequestHandler<Callb
         contextAttributes.add(Attribute.of("space_used", userInfoResponseData.get("space_used")));
         contextAttributes.add(Attribute.of("max_upload_size", userInfoResponseData.get("max_upload_size")));
         contextAttributes.add(Attribute.of("status", userInfoResponseData.get("status")));
-        contextAttributes.add(Attribute.of("box_access_token", accessToken));
+        contextAttributes.add(Attribute.of("box_access_token", Objects.toString(accessToken)));
         contextAttributes.add(Attribute.of("box_refresh_token", Objects.toString(tokenResponseData.get("refresh_token"), null)));
 
         AuthenticationAttributes authenticationAttributes = AuthenticationAttributes.of(
@@ -200,6 +140,85 @@ public class CallbackRequestHandler implements AuthenticatorRequestHandler<Callb
                 ContextAttributes.of(contextAttributes));
 
         return Optional.of(new AuthenticationResult(authenticationAttributes));
+    }
+
+    private Map<String, String> getUserInfo(@Nullable Object accessToken)
+    {
+        if (accessToken == null)
+        {
+            _logger.warn("No access token was available. Cannot get user info.");
+
+            throw _exceptionFactory.internalServerException(ErrorCode.EXTERNAL_SERVICE_ERROR);
+        }
+
+        HttpResponse userInfoResponse = _config.getWebServiceClient()
+                .withPath("/2.0/users/me")
+                .request()
+                .accept("application/json")
+                .header("Authorization", "Bearer " + accessToken.toString())
+                .get()
+                .response();
+        int statusCode = userInfoResponse.statusCode();
+
+        if (statusCode != 200)
+        {
+            if (_logger.isWarnEnabled())
+            {
+                _logger.warn("Got an error response from the user info endpoint. Error = {}, {}", statusCode,
+                        userInfoResponse.body(HttpResponse.asString()));
+            }
+
+            throw _exceptionFactory.internalServerException(ErrorCode.EXTERNAL_SERVICE_ERROR);
+        }
+
+        return _json.fromJson(userInfoResponse.body(HttpResponse.asString()))
+                .entrySet().stream()
+                .filter(e -> e.getValue() instanceof String)
+                .collect(Collectors.toMap(Map.Entry::getKey, e -> (String)e.getValue()));
+    }
+
+    private Map<String, Object> redeemCodeForTokens(CallbackGetRequestModel requestModel)
+    {
+        HttpResponse tokenResponse = _config.getWebServiceClient()
+                .withPath("/oauth2/token")
+                .request()
+                .accept("application/json")
+                .body(getFormEncodedBodyFrom(createPostData(_config.getClientId(), _config.getClientSecret(),
+                        requestModel.getCode(), requestModel.getRequestUrl())))
+                .method("POST")
+                .response();
+        int statusCode = tokenResponse.statusCode();
+
+        if (statusCode != 200)
+        {
+            if (_logger.isDebugEnabled())
+            {
+                _logger.info("Got error response from token endpoint: error = {}, {}", statusCode,
+                        tokenResponse.body(HttpResponse.asString()));
+            }
+
+            throw _exceptionFactory.internalServerException(ErrorCode.EXTERNAL_SERVICE_ERROR);
+        }
+
+        return _json.fromJson(tokenResponse.body(HttpResponse.asString()));
+    }
+
+    private void handleError(CallbackGetRequestModel requestModel)
+    {
+        if (!Objects.isNull(requestModel.getError()))
+        {
+            if ("access_denied".equals(requestModel.getError()))
+            {
+                _logger.debug("Got an error from Box: {} - {}", requestModel.getError(), requestModel.getErrorDescription());
+
+                throw _exceptionFactory.redirectException(
+                        _authenticatorInformationProvider.getAuthenticationBaseUri().toASCIIString());
+            }
+
+            _logger.warn("Got an error from Box: {} - {}", requestModel.getError(), requestModel.getErrorDescription());
+
+            throw _exceptionFactory.externalServiceException("Login with Box failed");
+        }
     }
 
     private static Map<String, String> createPostData(String clientId, String clientSecret, String code, String callbackUri)
