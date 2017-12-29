@@ -17,7 +17,6 @@
 package io.curity.identityserver.plugin.box.authentication;
 
 import io.curity.identityserver.plugin.box.config.BoxAuthenticatorPluginConfig;
-import io.curity.identityserver.plugin.box.descriptor.BoxAuthenticatorPluginDescriptor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import se.curity.identityserver.sdk.attribute.Attribute;
@@ -42,7 +41,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
-import static io.curity.identityserver.plugin.box.descriptor.BoxAuthenticatorPluginDescriptor.*;
+import static io.curity.identityserver.plugin.box.descriptor.BoxAuthenticatorPluginDescriptor.CALLBACK;
 
 public class BoxAuthenticatorRequestHandler implements AuthenticatorRequestHandler<Request>
 {
@@ -53,13 +52,11 @@ public class BoxAuthenticatorRequestHandler implements AuthenticatorRequestHandl
     private final AuthenticatorInformationProvider _authenticatorInformationProvider;
     private final ExceptionFactory _exceptionFactory;
 
-    public BoxAuthenticatorRequestHandler(BoxAuthenticatorPluginConfig config,
-                                          ExceptionFactory exceptionFactory,
-                                          AuthenticatorInformationProvider authenticatorInformationProvider)
+    public BoxAuthenticatorRequestHandler(BoxAuthenticatorPluginConfig config)
     {
         _config = config;
-        _exceptionFactory = exceptionFactory;
-        _authenticatorInformationProvider = authenticatorInformationProvider;
+        _exceptionFactory = config.getExceptionFactory();
+        _authenticatorInformationProvider = config.getAuthenticatorInformationProvider();
     }
 
     @Override

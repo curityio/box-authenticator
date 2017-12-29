@@ -66,17 +66,13 @@ public class CallbackRequestHandler implements AuthenticatorRequestHandler<Callb
     private final AuthenticatorInformationProvider _authenticatorInformationProvider;
     private final WebServiceClientFactory _webServiceClientFactory;
 
-    public CallbackRequestHandler(ExceptionFactory exceptionFactory,
-                                  Json json,
-                                  BoxAuthenticatorPluginConfig config,
-                                  WebServiceClientFactory webServiceClientFactory,
-                                  AuthenticatorInformationProvider authenticatorInformationProvider)
+    public CallbackRequestHandler(BoxAuthenticatorPluginConfig config)
     {
-        _exceptionFactory = exceptionFactory;
+        _exceptionFactory = config.getExceptionFactory();
         _config = config;
-        _json = json;
-        _webServiceClientFactory = webServiceClientFactory;
-        _authenticatorInformationProvider = authenticatorInformationProvider;
+        _json = config.getJson();
+        _webServiceClientFactory = config.getWebServiceClientFactory();
+        _authenticatorInformationProvider = config.getAuthenticatorInformationProvider();
     }
 
     @Override
