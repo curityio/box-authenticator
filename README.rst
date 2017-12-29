@@ -112,7 +112,7 @@ The easiest way to configure a new Box authenticator is using the Curity admin U
 
     .. figure:: docs/images/http-client.png
 
-8. Also in the ``Facilities`` view, you may need to add the intermediary Certificate Authority (CA) used to sign the SSL certificate on Box's token and user info endpoints. (You'll get a server error and find a PKIX-related message in the server log when attempting to login with the Box authenticator if this is necessary.) To do this, perform the following steps:
+8. Also in the ``Facilities`` view, you probably need to add the intermediary Certificate Authority (CA) used to sign the SSL certificate on Box's token and user info endpoints. (You'll get a server error and find a PKIX-related message in the server log when attempting to login with the Box authenticator if this is necessary.) To do this, perform the following steps:
 
     A. Click ``Facilities``.
     B. Next to ``Server Trust Stores``, click ``New``.
@@ -143,12 +143,9 @@ The easiest way to configure a new Box authenticator is using the Curity admin U
 
     D. If you have downloaded it, browse to the file. In any case, click the ``Add`` button.
 
-9. In the ``Hostname`` textbox, enter ``api.box.com``.
-10. In the ``Port`` textbox, enter ``443``.
-11. In the ``Context`` textfield, leave the default of ``/``.
-12. In the ``Client ID`` textfield, enter the client ID from the Box app configuration. This is the auto-generated ID that was shown after picking the app type and authentication method.
-13. Also enter the matching ``Client Secret``.
-14. If you have enabled any scopes or wish to limit the scopes that Curity will request of Box, toggle on the desired scopes (e.g., ``Enterprise Properties`` or ``Manage Groups``).
+9. In the ``Client ID`` textfield, enter the client ID from the Box app configuration. This is the auto-generated ID that was shown after picking the app type and authentication method.
+10. Also enter the matching ``Client Secret``.
+11. If you have enabled any scopes or wish to limit the scopes that Curity will request of Box, toggle on the desired scopes (e.g., ``Enterprise Properties`` or ``Manage Groups``).
 
 Once all of these changes are made, they will be staged, but not committed (i.e., not running). To make them active, click the ``Commit`` menu option in the ``Changes`` menu. Optionally enter a comment in the ``Deploy Changes`` dialogue and click ``OK``.
 
