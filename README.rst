@@ -16,12 +16,11 @@ Requirements for Building from Source
 
 * Maven 3
 * Java JDK v. 8
-* Credentials for the Curity Maven repository
 
 Compiling the Plug-in from Source
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The source is very easy to compile. You will need a credential though to authenticate to the Curity Maven repository where the Curity SDK JAR is hosted. Once you have this and have updated your Maven settings (`as described in the Curity manual <https://developer.curity.io/docs/latest/developer-guide/plugins/index.html#access-to-the-curity-release-repository>`_), the compilation and packaging of the plug-in can be done from a shell by issuing this command: ``mvn package``.
+The source is very easy to compile. To do so from a shell, issue this command: ``mvn package``.
 
 Installation
 ~~~~~~~~~~~~
