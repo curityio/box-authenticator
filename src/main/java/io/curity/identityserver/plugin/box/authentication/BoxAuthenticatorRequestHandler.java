@@ -64,7 +64,7 @@ public class BoxAuthenticatorRequestHandler implements AuthenticatorRequestHandl
     {
         _logger.debug("GET request received for authentication authentication");
 
-        URL redirectUri = createRedirectUri();
+        String redirectUri = createRedirectUri();
         String state = UUID.randomUUID().toString();
         Map<String, Collection<String>> queryStringArguments = new LinkedHashMap<>(5);
         Set<String> scopes = new LinkedHashSet<>(7);
@@ -72,7 +72,7 @@ public class BoxAuthenticatorRequestHandler implements AuthenticatorRequestHandl
         _config.getSessionManager().put(Attribute.of("state", state));
 
         queryStringArguments.put("client_id", Collections.singleton(_config.getClientId()));
-        queryStringArguments.put("redirect_uri", Collections.singleton(redirectUri.toString()));
+        queryStringArguments.put("redirect_uri", Collections.singleton(redirectUri));
         queryStringArguments.put("state", Collections.singleton(state));
         queryStringArguments.put("response_type", Collections.singleton("code"));
 
@@ -120,13 +120,13 @@ public class BoxAuthenticatorRequestHandler implements AuthenticatorRequestHandl
                 RedirectStatusCode.MOVED_TEMPORARILY, queryStringArguments, false);
     }
 
-    private URL createRedirectUri()
+    private String createRedirectUri()
     {
         try
         {
             URI authUri = _authenticatorInformationProvider.getFullyQualifiedAuthenticationUri();
 
-            return new URL(authUri.toURL(), authUri.getPath() + "/" + CALLBACK);
+            return new URL(authUri.toURL(), authUri.getPath() + "/" + CALLBACK).toString();
         }
         catch (MalformedURLException e)
         {
