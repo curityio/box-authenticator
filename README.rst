@@ -9,7 +9,7 @@ This project provides an opens source Box Authenticator plug-in for the Curity I
 System Requirements
 ~~~~~~~~~~~~~~~~~~~
 
-* Curity Identity Server 2.3.1 and `its system requirements <https://developer.curity.io/docs/latest/system-admin-guide/system-requirements.html>`_
+* Curity Identity Server 3.0.0 and `its system requirements <https://developer.curity.io/docs/latest/system-admin-guide/system-requirements.html>`_
 
 Requirements for Building from Source
 """""""""""""""""""""""""""""""""""""
@@ -97,7 +97,7 @@ The easiest way to configure a new Box authenticator is using the Curity admin U
 
         The Box-specific configuration is generated dynamically based on the `configuration model defined in the Java interface <https://github.com/curityio/box-authenticator/blob/master/src/main/java/io/curity/identityserver/plugin/box/config/BoxAuthenticatorPluginConfig.java>`_.
 
-6. Certain required configuration settings must be provided before the authenticator can be committed. One of these is the ``HTTP Client`` setting. This is the HTTP client that will be used to communicate with the Box OAuth server's token and user info endpoints. To define this, do the following:
+6. Certain required and optional configuration settings may be provided. One of these is the ``HTTP Client`` setting. This is the HTTP client that will be used to communicate with the Box OAuth server's token and user info endpoints. To define this, do the following:
 
     A. click the ``Facilities`` button at the top-right of the screen.
     B. Next to ``HTTP``, click ``New``.
