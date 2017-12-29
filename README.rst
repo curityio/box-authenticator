@@ -1,6 +1,9 @@
 Box Authenticator Plug-in
 =========================
 
+.. image:: https://travis-ci.org/curityio/box-authenticator.svg?branch=dev
+    :target: https://travis-ci.org/curityio/box-authenticator
+
 This project provides an opens source Box Authenticator plug-in for the Curity Identity Server. This allows an administrator to add functionality to Curity which will then enable end users to login using their Box credentials. The app that integrates with Curity may also be configured to receive the Box access token and refresh token, allowing it to manage resources in a Box enterprise.
 
 System Requirements
