@@ -36,12 +36,16 @@ import se.curity.identityserver.sdk.errors.ErrorCode;
 import se.curity.identityserver.sdk.http.HttpRequest;
 import se.curity.identityserver.sdk.http.HttpResponse;
 import se.curity.identityserver.sdk.service.ExceptionFactory;
+import se.curity.identityserver.sdk.service.HttpClient;
 import se.curity.identityserver.sdk.service.Json;
+import se.curity.identityserver.sdk.service.WebServiceClient;
+import se.curity.identityserver.sdk.service.WebServiceClientFactory;
 import se.curity.identityserver.sdk.service.authentication.AuthenticatorInformationProvider;
 import se.curity.identityserver.sdk.web.Request;
 import se.curity.identityserver.sdk.web.Response;
 
 import java.io.UnsupportedEncodingException;
+import java.net.URI;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
@@ -60,15 +64,18 @@ public class CallbackRequestHandler implements AuthenticatorRequestHandler<Callb
     private final BoxAuthenticatorPluginConfig _config;
     private final Json _json;
     private final AuthenticatorInformationProvider _authenticatorInformationProvider;
+    private final WebServiceClientFactory _webServiceClientFactory;
 
     public CallbackRequestHandler(ExceptionFactory exceptionFactory,
                                   Json json,
                                   BoxAuthenticatorPluginConfig config,
+                                  WebServiceClientFactory webServiceClientFactory,
                                   AuthenticatorInformationProvider authenticatorInformationProvider)
     {
         _exceptionFactory = exceptionFactory;
         _config = config;
         _json = json;
+        _webServiceClientFactory = webServiceClientFactory;
         _authenticatorInformationProvider = authenticatorInformationProvider;
     }
 
@@ -151,7 +158,7 @@ public class CallbackRequestHandler implements AuthenticatorRequestHandler<Callb
             throw _exceptionFactory.internalServerException(ErrorCode.EXTERNAL_SERVICE_ERROR);
         }
 
-        HttpResponse userInfoResponse = _config.getWebServiceClient()
+        HttpResponse userInfoResponse = getWebServiceClient()
                 .withPath("/2.0/users/me")
                 .request()
                 .accept("application/json")
@@ -179,7 +186,7 @@ public class CallbackRequestHandler implements AuthenticatorRequestHandler<Callb
 
     private Map<String, Object> redeemCodeForTokens(CallbackGetRequestModel requestModel)
     {
-        HttpResponse tokenResponse = _config.getWebServiceClient()
+        HttpResponse tokenResponse = getWebServiceClient()
                 .withPath("/oauth2/token")
                 .request()
                 .accept("application/json")
@@ -201,6 +208,20 @@ public class CallbackRequestHandler implements AuthenticatorRequestHandler<Callb
         }
 
         return _json.fromJson(tokenResponse.body(HttpResponse.asString()));
+    }
+
+    private WebServiceClient getWebServiceClient()
+    {
+        Optional<HttpClient> httpClient = _config.getHttpClient();
+
+        if (httpClient.isPresent())
+        {
+            return _webServiceClientFactory.create(httpClient.get()).withHost("api.box.com");
+        }
+        else
+        {
+            return _webServiceClientFactory.create(URI.create("https://api.box.com"));
+        }
     }
 
     private void handleError(CallbackGetRequestModel requestModel)

@@ -18,13 +18,11 @@ package io.curity.identityserver.plugin.box.config;
 
 import se.curity.identityserver.sdk.config.Configuration;
 import se.curity.identityserver.sdk.config.annotation.DefaultBoolean;
-import se.curity.identityserver.sdk.config.annotation.DefaultString;
-import se.curity.identityserver.sdk.config.annotation.DefaultURI;
 import se.curity.identityserver.sdk.config.annotation.Description;
+import se.curity.identityserver.sdk.service.HttpClient;
 import se.curity.identityserver.sdk.service.SessionManager;
-import se.curity.identityserver.sdk.service.WebServiceClient;
 
-import java.net.URI;
+import java.util.Optional;
 
 @SuppressWarnings("InterfaceNeverImplemented")
 public interface BoxAuthenticatorPluginConfig extends Configuration {
@@ -35,8 +33,9 @@ public interface BoxAuthenticatorPluginConfig extends Configuration {
     String getClientSecret();
 
     SessionManager getSessionManager();
-    
-    WebServiceClient getWebServiceClient();
+
+    @Description("The HTTP client with any proxy and TLS settings that will be used to connect to api.box.com")
+    Optional<HttpClient> getHttpClient();
 
     @DefaultBoolean(false)
     @Description("Request a scope (root_readwrite) that allows for read and write access to all files and folders")
