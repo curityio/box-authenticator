@@ -56,6 +56,8 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import static se.curity.identityserver.sdk.http.HttpRequest.createFormUrlEncodedBodyProcessor;
+
 public class CallbackRequestHandler implements AuthenticatorRequestHandler<CallbackGetRequestModel>
 {
     private final static Logger _logger = LoggerFactory.getLogger(CallbackRequestHandler.class);
@@ -186,8 +188,8 @@ public class CallbackRequestHandler implements AuthenticatorRequestHandler<Callb
                 .withPath("/oauth2/token")
                 .request()
                 .accept("application/json")
-                .body(getFormEncodedBodyFrom(createPostData(_config.getClientId(), _config.getClientSecret(),
-                        requestModel.getCode(), requestModel.getRequestUrl())))
+                .body(createFormUrlEncodedBodyProcessor(createPostData(_config.getClientId(),
+                        _config.getClientSecret(), requestModel.getCode(), requestModel.getRequestUrl())))
                 .method("POST")
                 .response();
         int statusCode = tokenResponse.statusCode();
@@ -249,15 +251,6 @@ public class CallbackRequestHandler implements AuthenticatorRequestHandler<Callb
         data.put("redirect_uri", callbackUri);
 
         return data;
-    }
-
-    private static HttpRequest.BodyProcessor getFormEncodedBodyFrom(Map<String, String> data)
-    {
-        StringBuilder stringBuilder = new StringBuilder();
-
-        data.entrySet().forEach(e -> appendParameter(stringBuilder, e));
-
-        return HttpRequest.fromString(stringBuilder.toString());
     }
 
     private static void appendParameter(StringBuilder stringBuilder, Map.Entry<String, String> entry)
