@@ -56,10 +56,6 @@ public interface BoxAuthenticatorPluginConfig extends Configuration {
     boolean isManageDataRetention();
 
     @DefaultBoolean(false)
-    @Description("Request a scope (manage_managed_users) that allows the app to manage and provision users")
-    boolean isManageUsers();
-
-    @DefaultBoolean(false)
     @Description("Request a scope (manage_app_users) that allows the app to manage its own users")
     boolean isManageAppUsers();
 

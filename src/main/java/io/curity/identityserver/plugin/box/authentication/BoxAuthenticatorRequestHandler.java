@@ -76,14 +76,11 @@ public class BoxAuthenticatorRequestHandler implements AuthenticatorRequestHandl
         queryStringArguments.put("state", Collections.singleton(state));
         queryStringArguments.put("response_type", Collections.singleton("code"));
 
+        scopes.add("manage_managed_users");
+
         if (_config.isReadWriteAllFileAccess())
         {
             scopes.add("root_readwrite");
-        }
-
-        if (_config.isManageUsers())
-        {
-            scopes.add("manage_managed_users");
         }
 
         if (_config.isManageGroups())
