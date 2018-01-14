@@ -71,7 +71,14 @@ URI Component                  Meaning
 ``boxAuthenticatorId``         This is the name given to the Box authenticator when defining it (e.g., ``box1``).
 ============================== =========================================================================================
 
-Once the redirect URI is updated, the app is ready to be used from Curity. It could be helpful to also enable additional scopes. Scopes are the Box-related rights or permissions that the app is requesting. If the final application (not Curity, but the downstream app) is going to perform actions using the Box API, additional scopes probably should be enabled. Refer to the `Box documentation on scopes <https://developer.box.com/docs/authentication#section-oauth-2-scopes>`_ for an explanation of those that can be enabled and what they allow.
+Once the redirect URI is updated, the only thing left is to configure scopes. You need to configure at least one scope `Manage User`.
+
+.. figure:: docs/images/box-scope-manage-user.png
+    :align: center
+    :width: 500px
+
+
+It could be helpful to also enable additional scopes. Scopes are the Box-related rights or permissions that the app is requesting. If the final application (not Curity, but the downstream app) is going to perform actions using the Box API, additional scopes probably should be enabled. Refer to the `Box documentation on scopes <https://developer.box.com/docs/authentication#section-oauth-2-scopes>`_ for an explanation of those that can be enabled and what they allow.
 
 .. warning::
 
