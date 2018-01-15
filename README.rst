@@ -65,7 +65,7 @@ URI Component                  Meaning
 ``baseUrl``                    The base URL of the server (defined on the ``System --> General`` page of the
                                admin GUI). If this value is not set, then the server scheme, name, and port should be
                                used (e.g., ``https://localhost:8443``).
-``authenticaitonEndpointPath`` The path of the authentication endpoint. In the admin GUI, this is located in the
+``authenticationEndpointPath`` The path of the authentication endpoint. In the admin GUI, this is located in the
                                authentication profile's ``Endpoints`` tab for the endpoint that has the type
                                ``auth-authentication``.
 ``boxAuthenticatorId``         This is the name given to the Box authenticator when defining it (e.g., ``box1``).
