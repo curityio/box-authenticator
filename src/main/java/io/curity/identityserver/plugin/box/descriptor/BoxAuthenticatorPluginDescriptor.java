@@ -26,8 +26,7 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-public final class BoxAuthenticatorPluginDescriptor
-        implements AuthenticatorPluginDescriptor<BoxAuthenticatorPluginConfig>
+public final class BoxAuthenticatorPluginDescriptor implements AuthenticatorPluginDescriptor<BoxAuthenticatorPluginConfig>
 {
     public final static String CALLBACK = "callback";
 

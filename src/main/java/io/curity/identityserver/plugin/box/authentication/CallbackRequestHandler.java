@@ -108,7 +108,7 @@ public class CallbackRequestHandler implements AuthenticatorRequestHandler<Callb
         List<Attribute> subjectAttributes = new LinkedList<>(), contextAttributes = new LinkedList<>();
         String login = userInfoResponseData.get("login");
 
-        subjectAttributes.add(Attribute.of("subject",  login));
+        subjectAttributes.add(Attribute.of("subject", login));
         subjectAttributes.add(Attribute.of("email", Email.of(login, true)));
         subjectAttributes.add(Attribute.of("name", Name.of(userInfoResponseData.get("name"))));
         subjectAttributes.add(Attribute.of("phone", PhoneNumber.of(userInfoResponseData.get("phone"), false)));
@@ -138,7 +138,8 @@ public class CallbackRequestHandler implements AuthenticatorRequestHandler<Callb
         contextAttributes.add(Attribute.of("max_upload_size", userInfoResponseData.get("max_upload_size")));
         contextAttributes.add(Attribute.of("status", userInfoResponseData.get("status")));
         contextAttributes.add(Attribute.of("box_access_token", Objects.toString(accessToken)));
-        contextAttributes.add(Attribute.of("box_refresh_token", Objects.toString(tokenResponseData.get("refresh_token"), null)));
+        contextAttributes.add(Attribute.of("box_refresh_token",
+                Objects.toString(tokenResponseData.get("refresh_token"), null)));
 
         AuthenticationAttributes authenticationAttributes = AuthenticationAttributes.of(
                 SubjectAttributes.of(login, Attributes.of(subjectAttributes)),
@@ -179,7 +180,7 @@ public class CallbackRequestHandler implements AuthenticatorRequestHandler<Callb
         return _json.fromJson(userInfoResponse.body(HttpResponse.asString()))
                 .entrySet().stream()
                 .filter(e -> e.getValue() instanceof String)
-                .collect(Collectors.toMap(Map.Entry::getKey, e -> (String)e.getValue()));
+                .collect(Collectors.toMap(Map.Entry::getKey, e -> (String) e.getValue()));
     }
 
     private Map<String, Object> redeemCodeForTokens(CallbackGetRequestModel requestModel)
@@ -228,7 +229,8 @@ public class CallbackRequestHandler implements AuthenticatorRequestHandler<Callb
         {
             if ("access_denied".equals(requestModel.getError()))
             {
-                _logger.debug("Got an error from Box: {} - {}", requestModel.getError(), requestModel.getErrorDescription());
+                _logger.debug("Got an error from Box: {} - {}", requestModel.getError(),
+                        requestModel.getErrorDescription());
 
                 throw _exceptionFactory.redirectException(
                         _authenticatorInformationProvider.getAuthenticationBaseUri().toASCIIString());
@@ -240,7 +242,8 @@ public class CallbackRequestHandler implements AuthenticatorRequestHandler<Callb
         }
     }
 
-    private static Map<String, String> createPostData(String clientId, String clientSecret, String code, String callbackUri)
+    private static Map<String, String> createPostData(String clientId, String clientSecret, String code,
+                                                      String callbackUri)
     {
         Map<String, String> data = new HashMap<>(5);
 

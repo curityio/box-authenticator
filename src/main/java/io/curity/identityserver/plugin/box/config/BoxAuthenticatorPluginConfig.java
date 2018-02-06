@@ -29,7 +29,8 @@ import se.curity.identityserver.sdk.service.authentication.AuthenticatorInformat
 import java.util.Optional;
 
 @SuppressWarnings("InterfaceNeverImplemented")
-public interface BoxAuthenticatorPluginConfig extends Configuration {
+public interface BoxAuthenticatorPluginConfig extends Configuration
+{
     @Description("The client applications identifier")
     String getClientId();
 
@@ -44,15 +45,18 @@ public interface BoxAuthenticatorPluginConfig extends Configuration {
     boolean isReadWriteAllFileAccess();
 
     @DefaultBoolean(false)
-    @Description("Request a scope (manage_groups) that allows the app to view, create, edit, and delete groups and group memberships")
+    @Description("Request a scope (manage_groups) that allows the app to view, create, edit, and delete groups and " +
+            "group memberships")
     boolean isManageGroups();
 
     @DefaultBoolean(false)
-    @Description("Request a scope (manage_enterprise_properties) that allows the app to to view and edit enterprise attributes and reports as well as edit and delete device pinners")
+    @Description("Request a scope (manage_enterprise_properties) that allows the app to to view and edit enterprise " +
+            "attributes and reports as well as edit and delete device pinners")
     boolean isEnterpriseProperties();
 
     @DefaultBoolean(false)
-    @Description("Request a scope (manage_data_retention) that allows the app to view and create content retention policies")
+    @Description("Request a scope (manage_data_retention) that allows the app to view and create content retention " +
+            "policies")
     boolean isManageDataRetention();
 
     @DefaultBoolean(false)
