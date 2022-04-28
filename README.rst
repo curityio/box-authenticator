@@ -12,13 +12,13 @@ This project provides an opens source Box Authenticator plug-in for the Curity I
 System Requirements
 ~~~~~~~~~~~~~~~~~~~
 
-* Curity Identity Server 2.4.0 and `its system requirements <https://developer.curity.io/docs/latest/system-admin-guide/system-requirements.html>`_
+* Curity Identity Server and `its system requirements <https://developer.curity.io/docs/latest/system-admin-guide/system-requirements.html>`_
 
 Requirements for Building from Source
 """""""""""""""""""""""""""""""""""""
 
 * Maven 3
-* Java JDK v. 8
+* Java SDK 17
 
 Compiling the Plug-in from Source
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
