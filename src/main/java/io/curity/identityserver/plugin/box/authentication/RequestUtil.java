@@ -9,9 +9,13 @@ import java.net.URL;
 
 import static io.curity.identityserver.plugin.box.descriptor.BoxAuthenticatorPluginDescriptor.CALLBACK;
 
-public class RequestUtil
+final class RequestUtil
 {
-    public static String createRedirectUri(AuthenticatorInformationProvider authenticatorInformationProvider, ExceptionFactory exceptionFactory)
+    private RequestUtil()
+    {
+    }
+
+    static String createRedirectUri(AuthenticatorInformationProvider authenticatorInformationProvider, ExceptionFactory exceptionFactory)
     {
         try
         {
