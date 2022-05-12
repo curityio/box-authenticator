@@ -33,7 +33,6 @@ import se.curity.identityserver.sdk.attribute.scim.v2.multivalued.Photo;
 import se.curity.identityserver.sdk.authentication.AuthenticationResult;
 import se.curity.identityserver.sdk.authentication.AuthenticatorRequestHandler;
 import se.curity.identityserver.sdk.errors.ErrorCode;
-import se.curity.identityserver.sdk.http.HttpRequest;
 import se.curity.identityserver.sdk.http.HttpResponse;
 import se.curity.identityserver.sdk.service.ExceptionFactory;
 import se.curity.identityserver.sdk.service.HttpClient;
@@ -56,6 +55,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import static io.curity.identityserver.plugin.box.authentication.RequestUtil.createRedirectUri;
 import static se.curity.identityserver.sdk.http.HttpRequest.createFormUrlEncodedBodyProcessor;
 
 public class CallbackRequestHandler implements AuthenticatorRequestHandler<CallbackGetRequestModel>
@@ -185,12 +185,14 @@ public class CallbackRequestHandler implements AuthenticatorRequestHandler<Callb
 
     private Map<String, Object> redeemCodeForTokens(CallbackGetRequestModel requestModel)
     {
+        var redirectUri = createRedirectUri(_authenticatorInformationProvider, _exceptionFactory);
+
         HttpResponse tokenResponse = getWebServiceClient()
                 .withPath("/oauth2/token")
                 .request()
                 .accept("application/json")
                 .body(createFormUrlEncodedBodyProcessor(createPostData(_config.getClientId(),
-                        _config.getClientSecret(), requestModel.getCode(), requestModel.getRequestUrl())))
+                        _config.getClientSecret(), requestModel.getCode(), redirectUri)))
                 .method("POST")
                 .response();
         int statusCode = tokenResponse.statusCode();
